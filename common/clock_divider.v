@@ -1,4 +1,4 @@
-`include "up_counter.v"
+//`include "common/up_counter.v"
 
 module clock_divider(clk, out);
 	//generalized clock divider, uses up_counter to count divs

@@ -29,7 +29,7 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 		endcase
 
 		case(delay_num)
-			O: delay_len = 32'h00001F40;
+			0: delay_len = 32'h00001F40;
 			1: delay_len = 32'h00093378;
 			2: delay_len = 32'h0001A5E0;
 			3: delay_len = 32'h0402EAA0;

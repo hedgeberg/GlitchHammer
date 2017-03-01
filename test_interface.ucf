@@ -1,0 +1,15 @@
+
+
+NET "parallel_out[7]" LOC = AA24;
+NET "parallel_out[6]" LOC = V20;
+NET "parallel_out[5]" LOC = AC25;
+NET "parallel_out[4]" LOC = AC24;
+NET "parallel_out[3]" LOC = W25;
+NET "parallel_out[2]" LOC = AB24;
+NET "parallel_out[1]" LOC = Y24;
+NET "parallel_out[0]" LOC = AB23;
+NET "clk" LOC = AE14;
+
+# PlanAhead Generated physical constraints 
+
+NET "reset" LOC = B6;
