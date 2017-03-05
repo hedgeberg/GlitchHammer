@@ -1,26 +1,15 @@
-`include "program_rom.v"
-//`include "common/up_counter.v"
-`include "common/clock_divider.v"
-`include "common/debouncer.v"
+`include "common/i2c_listen.v"
 
-module test_interface(clk, parallel_out, reset);
+module test_interface(clk, priv_sda, priv_scl, parallel_out, byte_ready, sop, eot);
 
-	input clk, reset;
+	input clk, priv_sda, priv_scl;
 	output [7:0] parallel_out;
 
-	wire div_clk, reset_dbnc;
-	wire [7:0] instr_pt;
-	wire [31:0] delay_len;
-	wire [11:0] instr;
+	wire [8:0] sda_out;
+	output byte_ready, sop, eot;
 
-	debouncer dbnc(reset, reset_dbnc, clk);
+	i2c_listen priv(priv_sda, sda_out, priv_scl, clk, byte_ready, sop, eot);
 
-	assign parallel_out = instr[8:1];
-
-	program_rom test_lut(instr_pt, instr, 0, delay_len);
-	up_counter up(1'b1, reset_dbnc, instr_pt, div_clk);
-
-	clock_divider #(8, 100) div(clk, div_clk);
-
+	assign parallel_out = sda_out[8:1];
 
 endmodule // test_interface

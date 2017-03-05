@@ -1,15 +1,22 @@
 
 
-NET "parallel_out[7]" LOC = AA24;
-NET "parallel_out[6]" LOC = V20;
-NET "parallel_out[5]" LOC = AC25;
-NET "parallel_out[4]" LOC = AC24;
-NET "parallel_out[3]" LOC = W25;
-NET "parallel_out[2]" LOC = AB24;
-NET "parallel_out[1]" LOC = Y24;
-NET "parallel_out[0]" LOC = AB23;
 NET "clk" LOC = AE14;
+
+
+#NET "reset" LOC = B6;
 
 # PlanAhead Generated physical constraints 
 
-NET "reset" LOC = B6;
+NET "parallel_out[0]" LOC = AA24;
+NET "parallel_out[1]" LOC = V20;
+NET "parallel_out[2]" LOC = AC25;
+NET "parallel_out[3]" LOC = AC24;
+NET "parallel_out[4]" LOC = W25;
+NET "parallel_out[5]" LOC = AB24;
+NET "parallel_out[6]" LOC = Y24;
+NET "parallel_out[7]" LOC = AB23;
+NET "byte_ready" LOC = W26;
+NET "eot" LOC = Y26;
+NET "sop" LOC = Y25;
+NET "priv_scl" LOC = AF24;
+NET "priv_sda" LOC = AE24;
