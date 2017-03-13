@@ -1,6 +1,6 @@
 module up_counter(en, clr, count, clk);
 	//up_counter with no rollover, halts increasing at MAX
-	//asynchronous clr
+	//synchronous clr
 	parameter WIDTH = 8;
 	parameter MAX = (1 << WIDTH) - 1;
 	input en, clr, clk;
