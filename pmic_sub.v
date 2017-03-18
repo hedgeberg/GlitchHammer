@@ -1,32 +1,33 @@
 `include "common/i2c_listen.v"
 `include "program_rom.v"
 `include "common/mux2x.v"
-`include "common/up_counter.v"
+`include "common/uds_counter.v"
+//`include "common/up_counter.v"
 
 //state machine for substituting control of the 1.2V line
 //replaces the PMIC, ideally to be used for glitch attacks on the 3DS SoC
 
 //todo:
-//    :need to correctly clear instr_pt on return to load_instr
-// 	  :all state dependent combinational logic
-//    :all instruction pointer incrementing/tracking
-//    :all value updating
+// 	  : add new_parcel state, which latches first instruction of parcel
+//    : add combinational logic for decrementing parcel_depth in decrement state
+//    : add dac updating logic 
 
-
-module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
+module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
+				 reset, clk, state);
 
 	input [8:0] i2c_main, i2c_priv;
 	input reset, clk, main_ready, priv_ready;
-
+	output reg [7:0] dac_out;
 	
 	
 	//instr controllers
-	reg depth_inc, depth_clr;
+	reg depth_inc, depth_dec, depth_clr;
 	wire [7:0] instr_pt;
-	reg [7:0] parcel_start;	 //set on return from delay or dac_update to 
+	reg [7:0] parcel_start_pt;	 //set on return from delay or dac_update to 
 						     //load_instr
 	wire [7:0] parcel_depth; //controlled via up counter
-	up_counter depth_count(depth_inc, depth_clr, parcel_depth, clk);
+	uds_counter depth_count(depth_inc, depth_dec, depth_clr, 
+							8'h00, parcel_depth, clk);
 
 	//delay control
 	reg [31:0] delay_len;
@@ -37,7 +38,7 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
 	up_counter #(32) delay_counter(delay_en, delay_clr, delay_count, clk);
 
 	//instr parsing
-	reg [11:0] curr_instr;
+	reg [11:0] curr_instr, parcel_start_instr;
 	wire [8:0] instr_data, curr_i2c_bus;
 	wire [11:0] next_instr;
 	wire bus_sel, dac_next, delay_next, i2c_ready;
@@ -49,15 +50,15 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
 	assign bus_sel = curr_instr[9];
 	assign dac_next = next_instr[10];
 	assign delay_next = next_instr[11];
-	assign instr_pt = parcel_start + parcel_depth;
+	assign instr_pt = parcel_start_pt + parcel_depth;
 
 
 
 	//state defs
 	parameter init = 0, load_instr = 1, i2c_wait = 2, i2c_check = 3;
 	parameter dac_update = 4, delay = 5, prep_delay = 6, depth_clearing = 7;
-	parameter initial_load_instr = 8;
-	reg [3:0] state;
+	parameter new_parcel = 9, pointer_decrement = 10; 
+	output reg [3:0] state;
 
 	//state transition logic
 	initial begin
@@ -68,18 +69,27 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
 		if(reset) state <= init;
 		else case(state)
 			init: begin
-				parcel_start <= 0;
-				delay_len <= 0;
-				state <= initial_load_instr;
+				parcel_start_pt <= 0;
+				parcel_start_instr <= 0;
+				curr_instr <= 0; 
+				delay_len <= 0; 
+				dac_out <= 0;
+				state <= new_parcel;
 			end 
+			pointer_decrement: begin
+				state <= new_parcel; 
+			end
+			depth_clearing: state <= load_instr;
+			new_parcel: begin
+				parcel_start_pt <= instr_pt;
+				parcel_start_instr <= next_instr; 
+				state <= load_instr; 
+			end
 			load_instr: begin
-				curr_instr <= next_instr;
-				if((parcel_start == 0) && (parcel_depth == 0)) 
-					state <= initial_load_instr;
-				else if(delay_next) state <= prep_delay;
+				curr_instr <= parcel_start_instr;
+				if(delay_next) state <= prep_delay;
 				else if(dac_next) state <= dac_update;
 				else state <= i2c_wait;
-				parcel_start <= parcel_start + parcel_depth; 
 			end
 			i2c_wait: begin
 				if(i2c_ready) state <= i2c_check;
@@ -96,31 +106,24 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
 			end
 			dac_update: begin
 				curr_instr <= next_instr;
+				dac_out <= instr_data[8:1];
 				if(delay_next) state <= prep_delay;
 				else if(dac_next) state <= dac_update;
-				else state <= load_instr;
+				else state <= pointer_decrement;
 			end
 			delay: begin
 				if(delay_count > delay_len) begin 
 					curr_instr <= next_instr;
 					if(delay_next) state <= prep_delay;
 					else if(dac_next) state <= dac_update;
-					else state <= load_instr;
+					else state <= pointer_decrement;
 				end
 				else state <= delay;
 			end
 			prep_delay: begin
 				state <= delay; 
 				delay_len <= delay_ref; 
-			end
-			depth_clearing: state <= load_instr;
-			initial_load_instr: begin
-				parcel_start <= 0;
-				curr_instr <= next_instr;
-				if(delay_next) state <= prep_delay;
-				else if(dac_next) state <= dac_update;
-				else state <= i2c_wait;
-			end
+			end 
 		endcase
 	end 
 
@@ -128,21 +131,29 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, reset, clk);
 	always @* begin 
 		//depth_Clr
 		if((state == init) || (state == depth_clearing) || 
-		   (state == load_instr)) depth_clr = 1;
+		   (state == new_parcel)) depth_clr = 1;
 		else depth_clr = 0;
 
+		//depth_inc
 		if((state == i2c_check) || (state == dac_update) || 
 		  ((state == delay) && (delay_count > delay_len)) || 
-		   (state == initial_load_instr)) 
+		   (state == load_instr)) 
 			depth_inc = 1;
 		else depth_inc = 0;
 
+		//depth_dec
+		if(state == pointer_decrement) depth_dec = 1;
+		else depth_dec = 0;
+
+		//delay_num
 		if(state == prep_delay) delay_num = instr_data[8:1];
 		else delay_num = 0;
 
+		//delay_en
 		if(state == delay) delay_en = 1;
 		else delay_en = 0;
 
+		//delay_clr
 		if(state == delay) delay_clr = 0;
 		else delay_clr = 1;
 	end

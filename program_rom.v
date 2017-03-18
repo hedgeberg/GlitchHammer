@@ -8,7 +8,7 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 	input [7:0] instr_pt, delay_num;
 	output reg [11:0] instr;
 	output reg [31:0] delay_len; 
-	
+
 	always @* begin
 		case(instr_pt)
 			0:  instr = 12'b00_1_10000100_0;
