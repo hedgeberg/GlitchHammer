@@ -1,16 +1,13 @@
 
 
-NET "clk" LOC = AE14;
+NET "sysclk" LOC = AE14;
 NET "priv_scl" LOC = AF24;
 NET "priv_sda" LOC = AE24;
 
-# PlanAhead Generated physical constraints 
 
 
 
 NET "dac_clk" LOC = AF8;
-NET "priv_scl_out" LOC = AD22;
-NET "priv_sda_out" LOC = AB21;
 NET "reset" LOC = B6;
 NET "LED_out[0]" LOC = G5;
 NET "LED_out[1]" LOC = G6;
@@ -28,3 +25,16 @@ NET "dac_level[3]" LOC = W25;
 NET "dac_level[2]" LOC = AB24;
 NET "dac_level[1]" LOC = Y24;
 NET "dac_level[0]" LOC = AB23;
+
+# PlanAhead Generated physical constraints 
+
+NET "main_scl" LOC = AD22;
+NET "main_sda" LOC = AB21;
+NET "debug_port[0]" LOC = AB22;
+NET "debug_port[1]" LOC = AD25;
+NET "debug_port[2]" LOC = W22;
+NET "debug_port[3]" LOC = V21;
+NET "debug_port[4]" LOC = V22;
+NET "debug_port[5]" LOC = AC22;
+NET "debug_port[6]" LOC = AD26;
+NET "debug_port[7]" LOC = AC26;

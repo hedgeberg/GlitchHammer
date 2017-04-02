@@ -15,7 +15,8 @@
 //as it goes live, meaning it gets an initial posedge to init off of
 //if this is not the case, initial state must be changed
 
-module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, eot);
+module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, eot, 
+				  depth_count, scl_posedge, sda_posedge, sda_negedge);
 	parameter I2C_WIDTH = 8 + 1; 
 	
 
@@ -25,8 +26,8 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 
 	wire sda_in, scl;
 
-	glitch_filter sda_filt(sda_glitched, sda_in, sysclk);
-	glitch_filter scl_filt(scl_glitched, scl, sysclk);
+	glitch_filter #(2) sda_filt(sda_glitched, sda_in, sysclk);
+	glitch_filter #(2) scl_filt(scl_glitched, scl, sysclk);
 
 	initial begin
 		sda_out = 0;
@@ -40,9 +41,12 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 	reg shift_en;
 	wire [7:0] count;
 	wire [8:0] shift_out;
-	reg prev_scl, prev_sda;
 
+	//debugging signals
+	output wire [3:0] depth_count;
+	assign depth_count = count[3:0];
 
+	
 	//child modules
 	up_counter counter(cnt_en, cnt_clr, count, sysclk);
 	shift_register shift(sda_in, shift_out, sysclk,
@@ -51,15 +55,60 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 	//state setup
 	reg [2:0] state;
 
+
+
 	parameter bus_init_wait = 0, wait_for_SOP = 1, SOP_caught = 2, sample_wait = 3, 
 			  sampling = 4, end_of_byte = 5, EOT_caught = 6;
 
+
+
+
+
+	//edge detection logic
+	reg prev_sda, prev_scl;
+	output reg scl_posedge, sda_negedge, sda_posedge;
+	initial begin
+		prev_sda = 0; prev_scl = 0;
+	end
+	
+	always @(posedge sysclk) begin
+		if((sda_in == 1) && (prev_sda == 0)) begin 
+			sda_posedge <= 1;
+			sda_negedge <= 0;
+		end
+		else if((sda_in == 0) && (prev_sda == 1)) begin
+			sda_negedge <= 1;
+			sda_posedge <= 0;
+		end
+		else begin 
+			sda_negedge <= 0; 
+			sda_posedge <= 0;
+		end
+
+		if((scl == 1) && (prev_scl == 0)) begin
+			scl_posedge <= 1;
+		end
+		else begin 
+			scl_posedge <= 0;
+		end
+
+		prev_scl <= scl;
+		prev_sda <= sda_in;
+
+	end
+
+	//initialization block
+	reg prev_sda_old, prev_scl_old;
 	initial begin
 		state = bus_init_wait;
+		prev_sda_old = 0; prev_scl_old = 0;
+		scl_posedge = 0; sda_posedge = 0; sda_negedge = 0;
 	end
 
 
 	//next state/rt logic
+
+	
 	always @(posedge sysclk) begin
 		case(state)
 			bus_init_wait: begin
@@ -72,11 +121,11 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 			end
 			SOP_caught: state <= sample_wait;
 			sample_wait: begin
-				if ((scl == 1'b1) && (sda_in == 1'b1) && (prev_sda == 1'b0)) 
+				if ((scl == 1'b1) && (sda_in == 1'b1) && (prev_sda_old == 1'b0)) 
 															state <= EOT_caught;
-				else if((scl == 1'b1) && (prev_sda == 1'b1) && (sda_in == 1'b0))
+				else if((scl == 1'b1) && (prev_sda_old == 1'b1) && (sda_in == 1'b0))
 					state <= SOP_caught;
-				else if((prev_scl == 1'b0) && (scl == 1'b1)) state <= sampling;
+				else if((prev_scl_old == 1'b0) && (scl == 1'b1)) state <= sampling;
 				else state <= sample_wait;
 			end
 			sampling: begin
@@ -89,8 +138,8 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 			end
 			EOT_caught: state <= wait_for_SOP;
 		endcase 
-		prev_scl <= scl;
-		prev_sda <= sda_in;
+		prev_scl_old <= scl;
+		prev_sda_old <= sda_in;
 	end
 
 

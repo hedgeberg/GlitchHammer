@@ -8,9 +8,10 @@
 //replaces the PMIC, ideally to be used for glitch attacks on the 3DS SoC
 
 //todo:
-// 	  : add new_parcel state, which latches first instruction of parcel
-//    : add combinational logic for decrementing parcel_depth in decrement state
-//    : add dac updating logic 
+//	  : route private bus edge detection logic for debugging. 
+//	  : reimplement i2c_detection with edge detection logic. 
+//    : continue onboard testing after simulation confirms function.
+//    : 
 
 module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 				 reset, clk, state);
