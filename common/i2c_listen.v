@@ -26,8 +26,11 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 
 	wire sda_in, scl;
 
-	glitch_filter #(2) sda_filt(sda_glitched, sda_in, sysclk);
-	glitch_filter #(2) scl_filt(scl_glitched, scl, sysclk);
+	//glitch_filter #(2) sda_filt(sda_glitched, sda_in, sysclk);
+	//glitch_filter #(2) scl_filt(scl_glitched, scl, sysclk);
+
+	assign scl = scl_glitched;
+	assign sda_in = sda_glitched;
 
 	initial begin
 		sda_out = 0;
@@ -65,13 +68,15 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 
 
 	//edge detection logic
-	reg prev_sda, prev_scl;
+	reg prev_sda_0, prev_sda_1, prev_scl_0, prev_scl_1;
 	output reg scl_posedge, sda_negedge, sda_posedge;
 	initial begin
-		prev_sda = 0; prev_scl = 0;
+		prev_sda_0 = 0; prev_sda_1 = 0; 
+		prev_scl_0 = 0; prev_scl_1 = 0;
 	end
 	
 	always @(posedge sysclk) begin
+		/*
 		if((sda_in == 1) && (prev_sda == 0)) begin 
 			sda_posedge <= 1;
 			sda_negedge <= 0;
@@ -84,16 +89,26 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 			sda_negedge <= 0; 
 			sda_posedge <= 0;
 		end
+		*/
 
+		sda_posedge <= sda_in & ~(prev_sda_0);
+		sda_negedge <= ~(sda_in) & ( prev_sda_0);
+
+		/*	
 		if((scl == 1) && (prev_scl == 0)) begin
 			scl_posedge <= 1;
 		end
 		else begin 
 			scl_posedge <= 0;
 		end
+		*/
 
-		prev_scl <= scl;
-		prev_sda <= sda_in;
+		scl_posedge <= scl & ~(prev_scl_0);
+
+		//prev_scl_1 <= prev_scl_0;
+		prev_scl_0 <= scl;
+		//prev_sda_1 <= prev_sda_0;
+		prev_sda_0 <= sda_in;
 
 	end
 

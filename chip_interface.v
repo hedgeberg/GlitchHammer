@@ -13,8 +13,8 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	assign priv_scl_out = priv_scl;
 	assign priv_sda_out = priv_sda;
 
-	clock_divider #(8, 2) div(sysclk, clk);
-
+	//clock_divider #(8, 2) div(sysclk, clk);
+	assign clk = sysclk;
 
 	wire [8:0] priv_sda_dec, main_sda_dec, rambus;
 	wire priv_ready, main_ready, priv_sop, priv_eot, main_sop, main_eot;
@@ -31,9 +31,11 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	assign debug_port[0] = priv_sda;
 	assign debug_port[1] = priv_scl;
-	assign debug_port[5:2] = priv_cnt_debug;
-	assign debug_port[6] = priv_scl_posedge;
-	assign debug_port[7] = priv_sda_posedge;
+	assign debug_port[4:2] = 0;
+	//assign debug_port[5:2] = priv_cnt_debug;
+	assign debug_port[5] = priv_scl_posedge;
+	assign debug_port[6] = priv_sda_posedge;
+	assign debug_port[7] = priv_sda_negedge;
 
 	//i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 	//			 reset, clk
