@@ -16,7 +16,7 @@
 //if this is not the case, initial state must be changed
 
 module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, eot, 
-				  depth_count, scl_posedge, sda_posedge, sda_negedge);
+				   scl_posedge, sda_posedge, sda_negedge);
 	parameter I2C_WIDTH = 8 + 1; 
 	
 
@@ -46,8 +46,8 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 	wire [8:0] shift_out;
 
 	//debugging signals
-	output wire [3:0] depth_count;
-	assign depth_count = count[3:0];
+	
+	
 
 	
 	//child modules
@@ -68,46 +68,21 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 
 
 	//edge detection logic
-	reg prev_sda_0, prev_sda_1, prev_scl_0, prev_scl_1;
+	reg prev_sda_0, prev_scl_0;
 	output reg scl_posedge, sda_negedge, sda_posedge;
 	initial begin
-		prev_sda_0 = 0; prev_sda_1 = 0; 
-		prev_scl_0 = 0; prev_scl_1 = 0;
+		prev_sda_0 = 0; //prev_sda_1 = 0; 
+		prev_scl_0 = 0; //prev_scl_1 = 0;
 	end
 	
 	always @(posedge sysclk) begin
-		/*
-		if((sda_in == 1) && (prev_sda == 0)) begin 
-			sda_posedge <= 1;
-			sda_negedge <= 0;
-		end
-		else if((sda_in == 0) && (prev_sda == 1)) begin
-			sda_negedge <= 1;
-			sda_posedge <= 0;
-		end
-		else begin 
-			sda_negedge <= 0; 
-			sda_posedge <= 0;
-		end
-		*/
 
 		sda_posedge <= sda_in & ~(prev_sda_0);
 		sda_negedge <= ~(sda_in) & ( prev_sda_0);
 
-		/*	
-		if((scl == 1) && (prev_scl == 0)) begin
-			scl_posedge <= 1;
-		end
-		else begin 
-			scl_posedge <= 0;
-		end
-		*/
 
 		scl_posedge <= scl & ~(prev_scl_0);
-
-		//prev_scl_1 <= prev_scl_0;
 		prev_scl_0 <= scl;
-		//prev_sda_1 <= prev_sda_0;
 		prev_sda_0 <= sda_in;
 
 	end
@@ -136,11 +111,9 @@ module i2c_listen(sda_glitched, sda_out, scl_glitched, sysclk, byte_ready, sop, 
 			end
 			SOP_caught: state <= sample_wait;
 			sample_wait: begin
-				if ((scl == 1'b1) && (sda_in == 1'b1) && (prev_sda_old == 1'b0)) 
-															state <= EOT_caught;
-				else if((scl == 1'b1) && (prev_sda_old == 1'b1) && (sda_in == 1'b0))
-					state <= SOP_caught;
-				else if((prev_scl_old == 1'b0) && (scl == 1'b1)) state <= sampling;
+				if ((scl == 1'b1) && sda_posedge) state <= EOT_caught;
+				else if((scl == 1'b1) && sda_negedge) state <= SOP_caught;
+				else if(scl_posedge) state <= sampling;
 				else state <= sample_wait;
 			end
 			sampling: begin

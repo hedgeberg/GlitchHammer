@@ -4,6 +4,7 @@ module up_counter(en, clr, count, clk);
 	parameter WIDTH = 8;
 	parameter MAX = (1 << WIDTH) - 1;
 	input en, clr, clk;
+	(* KEEP = "TRUE"*) 
 	output reg [WIDTH-1:0] count;
 
 

@@ -1,35 +1,71 @@
+//NET "delay_counter/count_0" KEEP; NET "delay_counter/count_0" S;
+//NET "delay_counter/count_1" KEEP; NET "delay_counter/count_1" S;
+//NET "delay_counter/count_2" KEEP; NET "delay_counter/count_2" S;
+//NET "delay_counter/count_3" KEEP; NET "delay_counter/count_3" S;
+//NET "delay_counter/count_4" KEEP; NET "delay_counter/count_4" S;
+//NET "delay_counter/count_5" KEEP; NET "delay_counter/count_5" S;
+//NET "delay_counter/count_6" KEEP; NET "delay_counter/count_6" S;
+//NET "delay_counter/count_7" KEEP; NET "delay_counter/count_7" S;
+//NET "delay_counter/count_8" KEEP; NET "delay_counter/count_8" S;
+//NET "delay_counter/count_9" KEEP; NET "delay_counter/count_9" S;
+//NET "delay_counter/count_10" KEEP; NET "delay_counter/count_10" S;
+//NET "delay_counter/count_11" KEEP; NET "delay_counter/count_11" S;
+//NET "delay_counter/count_12" KEEP; NET "delay_counter/count_12" S;
+//NET "delay_counter/count_13" KEEP; NET "delay_counter/count_13" S;
+//NET "delay_counter/count_14" KEEP; NET "delay_counter/count_14" S;
+//NET "delay_counter/count_15" KEEP; NET "delay_counter/count_15" S;
+//NET "delay_counter/count_16" KEEP; NET "delay_counter/count_16" S;
+//NET "delay_counter/count_17" KEEP; NET "delay_counter/count_17" S;
+//NET "delay_counter/count_18" KEEP; NET "delay_counter/count_18" S;
+//NET "delay_counter/count_19" KEEP; NET "delay_counter/count_19" S;
+//NET "delay_counter/count_20" KEEP; NET "delay_counter/count_20" S;
+//NET "delay_counter/count_21" KEEP; NET "delay_counter/count_21" S;
+//NET "delay_counter/count_22" KEEP; NET "delay_counter/count_22" S;
+//NET "delay_counter/count_23" KEEP; NET "delay_counter/count_23" S;
+//NET "delay_counter/count_24" KEEP; NET "delay_counter/count_24" S;
+//NET "delay_counter/count_25" KEEP; NET "delay_counter/count_25" S;
+//NET "delay_counter/count_26" KEEP; NET "delay_counter/count_26" S;
+//NET "delay_counter/count_27" KEEP; NET "delay_counter/count_27" S;
+//NET "delay_counter/count_31" KEEP; NET "delay_counter/count_31" S;
+//NET "delay_counter/count_28" KEEP; NET "delay_counter/count_28" S;
+//NET "delay_counter/count_29" KEEP; NET "delay_counter/count_29" S;
+//NET "delay_counter/count_30" KEEP; NET "delay_counter/count_30" S;
+
+NET "sysclk" LOC = AE14;
+NET "priv_scl" LOC = AF24;
+NET "priv_sda" LOC = AE24;
 
 
-NET "clk" LOC = AE14;
-#NET "up_btn" LOC = E7;
-#NET "dwn_btn" LOC = A6;
-NET "LED_out[7]" LOC = E2;
-NET "LED_out[6]" LOC = F9;
-NET "LED_out[5]" LOC = C6;
-NET "LED_out[4]" LOC = E10;
-NET "LED_out[3]" LOC = A12;
-NET "LED_out[2]" LOC = A11;
-NET "LED_out[1]" LOC = G6;
-NET "LED_out[0]" LOC = G5;
 
 
 NET "dac_clk" LOC = AF8;
-NET "dac_level[0]" LOC = M22;
-NET "dac_level[1]" LOC = M23;
-NET "dac_level[2]" LOC = M20;
-NET "dac_level[3]" LOC = E4;
-NET "dac_level[4]" LOC = D3;
-NET "dac_level[5]" LOC = H7;
-NET "dac_level[6]" LOC = H8;
-NET "dac_level[7]" LOC = C1;
-
-
-NET "main_sda" LOC = AA24;
-NET "main_scl" LOC = V20;
-NET "priv_scl" LOC = AC24;
-NET "priv_sda" LOC = AC25;
-#NET "y_button" LOC = W25;
+NET "reset" LOC = B6;
+NET "LED_out[0]" LOC = G5;
+NET "LED_out[1]" LOC = G6;
+NET "LED_out[2]" LOC = A11;
+NET "LED_out[3]" LOC = A12;
+NET "LED_out[4]" LOC = E10;
+NET "LED_out[5]" LOC = C6;
+NET "LED_out[6]" LOC = F9;
+NET "LED_out[7]" LOC = E2;
+NET "dac_level[7]" LOC = AA24;
+NET "dac_level[6]" LOC = V20;
+NET "dac_level[5]" LOC = AC25;
+NET "dac_level[4]" LOC = AC24;
+NET "dac_level[3]" LOC = W25;
+NET "dac_level[2]" LOC = AB24;
+NET "dac_level[1]" LOC = Y24;
+NET "dac_level[0]" LOC = AB23;
 
 # PlanAhead Generated physical constraints 
 
-NET "reset" LOC = B6;
+NET "main_scl" LOC = AD22;
+NET "main_sda" LOC = AB21;
+NET "debug_port[0]" LOC = AB22;
+NET "debug_port[1]" LOC = AD25;
+NET "debug_port[2]" LOC = W22;
+NET "debug_port[3]" LOC = V21;
+NET "debug_port[4]" LOC = V22;
+NET "debug_port[5]" LOC = AC22;
+NET "debug_port[6]" LOC = AD26;
+NET "debug_port[7]" LOC = AC26;

@@ -14,7 +14,7 @@
 //    : 
 
 module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
-				 reset, clk, state);
+				 reset, clk, state, delay_count);
 
 	input [8:0] i2c_main, i2c_priv;
 	input reset, clk, main_ready, priv_ready;
@@ -31,12 +31,13 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 							8'h00, parcel_depth, clk);
 
 	//delay control
-	reg [31:0] delay_len;
+	reg [31:0] delay_len, delay_in;
 	wire [31:0] delay_ref;
 	reg [7:0]  delay_num;
 	reg delay_en, delay_clr;
-	wire [31:0] delay_count;
-	up_counter #(32) delay_counter(delay_en, delay_clr, delay_count, clk);
+	(* KEEP = "TRUE"*) 
+	output wire [31:0] delay_count;
+	uds_counter #(32, (32'hFFFFFFFF)) delay_counter(delay_en, 1'b0, delay_clr, delay_in, delay_count, clk);
 
 	//instr parsing
 	reg [11:0] curr_instr, parcel_start_instr;
@@ -134,6 +135,9 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 		if((state == init) || (state == depth_clearing) || 
 		   (state == new_parcel)) depth_clr = 1;
 		else depth_clr = 0;
+
+		if(state == init) delay_in = 32'hFFFFFFFF;
+		else delay_in = 0;
 
 		//depth_inc
 		if((state == i2c_check) || (state == dac_update) || 

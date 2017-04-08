@@ -20,7 +20,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	wire priv_ready, main_ready, priv_sop, priv_eot, main_sop, main_eot;
 	wire priv_scl_posedge, priv_sda_posedge, priv_sda_negedge, main_scl_posedge, main_sda_negedge, main_sda_posedge;
 	//debug signals
-	wire [3:0] priv_cnt_debug;
+	wire [31:0] delay_count;
 
 	/*
 	assign priv_nack = priv_sda_dec[0];
@@ -31,19 +31,21 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	assign debug_port[0] = priv_sda;
 	assign debug_port[1] = priv_scl;
-	assign debug_port[4:2] = 0;
-	//assign debug_port[5:2] = priv_cnt_debug;
-	assign debug_port[5] = priv_scl_posedge;
+	assign debug_port[5:2] = state;
+	assign debug_port[7:6] = 0;
+	//assign debug_port[7:2] = delay_count[5:0];
+	//assign debug_port[7]   = delay_count[0];
+	/*assign debug_port[5] = priv_scl_posedge;
 	assign debug_port[6] = priv_sda_posedge;
 	assign debug_port[7] = priv_sda_negedge;
-
+*/
 	//i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 	//			 reset, clk
-	pmic_core core(main_sda_dec, priv_sda_dec, priv_ready, main_ready, dac_level, reset, clk, state);
+	pmic_core core(main_sda_dec, priv_sda_dec, priv_ready, main_ready, dac_level, reset, clk, state, delay_count);
 
-	i2c_listen sniff_priv(priv_sda, priv_sda_dec, priv_scl, clk, priv_ready, priv_sop, priv_eot, priv_cnt_debug,
+	i2c_listen sniff_priv(priv_sda, priv_sda_dec, priv_scl, clk, priv_ready, priv_sop, priv_eot, 
 					      priv_scl_posedge, priv_sda_posedge, priv_sda_negedge);
-	i2c_listen sniff_main(main_sda, main_sda_dec, main_scl, clk, main_ready, main_sop, main_eot, main_cnt_debug,
+	i2c_listen sniff_main(main_sda, main_sda_dec, main_scl, clk, main_ready, main_sop, main_eot, 
 						  main_scl_posedge, main_sda_posedge, main_sda_negedge);
 
 
