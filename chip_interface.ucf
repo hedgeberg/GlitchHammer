@@ -48,14 +48,14 @@ NET "LED_out[4]" LOC = E10;
 NET "LED_out[5]" LOC = C6;
 NET "LED_out[6]" LOC = F9;
 NET "LED_out[7]" LOC = E2;
-NET "dac_level[7]" LOC = AA24;
-NET "dac_level[6]" LOC = V20;
-NET "dac_level[5]" LOC = AC25;
-NET "dac_level[4]" LOC = AC24;
-NET "dac_level[3]" LOC = W25;
-NET "dac_level[2]" LOC = AB24;
-NET "dac_level[1]" LOC = Y24;
-NET "dac_level[0]" LOC = AB23;
+NET "dac_level[7]" LOC = C1;
+NET "dac_level[6]" LOC = H8;
+NET "dac_level[5]" LOC = H7;
+NET "dac_level[4]" LOC = D3;
+NET "dac_level[3]" LOC = E4;
+NET "dac_level[2]" LOC = M20;
+NET "dac_level[1]" LOC = M23;
+NET "dac_level[0]" LOC = M22;
 
 # PlanAhead Generated physical constraints 
 

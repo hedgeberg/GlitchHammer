@@ -75,7 +75,7 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 				parcel_start_instr <= 0;
 				curr_instr <= 0; 
 				delay_len <= 0; 
-				dac_out <= 0;
+				dac_out <= 8'hFF;
 				state <= new_parcel;
 			end 
 			pointer_decrement: begin

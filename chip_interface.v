@@ -31,7 +31,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	assign debug_port[0] = priv_sda;
 	assign debug_port[1] = priv_scl;
-	assign debug_port[5:2] = state;
+	assign debug_port[5:2] = dac_level[3:0];
 	assign debug_port[7:6] = 0;
 	//assign debug_port[7:2] = delay_count[5:0];
 	//assign debug_port[7]   = delay_count[0];
