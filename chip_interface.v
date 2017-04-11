@@ -1,5 +1,6 @@
 `include "pmic_sub.v"
-`include "common/clock_divider.v"
+//`include "common/clock_divider.v"
+`include "common/debouncer.v"
 module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button,
 					  dac_level, dac_clk, LED_out, reset, debug_port);
 	input reset;
@@ -8,6 +9,8 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	output [7:0] dac_level, LED_out, debug_port;
 	output dac_clk;
 	wire [3:0] state;
+
+
 	assign LED_out = dac_level;
 	assign dac_clk = clk;
 	assign priv_scl_out = priv_scl;
@@ -15,6 +18,9 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	//clock_divider #(8, 2) div(sysclk, clk);
 	assign clk = sysclk;
+
+	wire reset_dbncd;
+	debouncer dbnc_rst(reset, reset_dbncd, clk);
 
 	wire [8:0] priv_sda_dec, main_sda_dec, rambus;
 	wire priv_ready, main_ready, priv_sop, priv_eot, main_sop, main_eot;
@@ -31,7 +37,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	assign debug_port[0] = priv_sda;
 	assign debug_port[1] = priv_scl;
-	assign debug_port[5:2] = dac_level[3:0];
+	assign debug_port[5:2] = state;
 	assign debug_port[7:6] = 0;
 	//assign debug_port[7:2] = delay_count[5:0];
 	//assign debug_port[7]   = delay_count[0];
@@ -41,7 +47,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 */
 	//i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 	//			 reset, clk
-	pmic_core core(main_sda_dec, priv_sda_dec, priv_ready, main_ready, dac_level, reset, clk, state, delay_count);
+	pmic_core core(main_sda_dec, priv_sda_dec, priv_ready, main_ready, dac_level, reset_dbncd, clk, state, delay_count);
 
 	i2c_listen sniff_priv(priv_sda, priv_sda_dec, priv_scl, clk, priv_ready, priv_sop, priv_eot, 
 					      priv_scl_posedge, priv_sda_posedge, priv_sda_negedge);

@@ -1,4 +1,4 @@
-`include "common/up_counter.v"
+//`include "common/up_counter.v"
 
 module debouncer(in, out, clk);
 	//simple debouncer to regulate output of switches on FPGA dev board
