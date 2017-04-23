@@ -1,5 +1,5 @@
 `include "common/shift_register.v" 
-`include "common/glitch_filter.v"  //up counter is instantiated in glitch filter
+//`include "common/glitch_filter.v"  //up counter is instantiated in glitch filter
 
 //i2c circuit, meant just for listening to an i2c bus.
 //THIS IS NOT MASTER NOR SLAVE. It cannot write to the bus, nor ack/nak

@@ -1,4 +1,4 @@
-`include "common/up_counter.v"
+//`include "common/up_counter.v"
 
 
 //assists in filtering glitches from noisy external IO

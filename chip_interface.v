@@ -1,13 +1,15 @@
 `include "pmic_sub.v"
-//`include "common/clock_divider.v"
+`include "common/clock_divider.v"
 `include "common/debouncer.v"
 module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button,
-					  dac_level, dac_clk, LED_out, reset, debug_port);
+					  dac_level, dac_clk, LED_out, reset, debug_port, 
+					  seedclock);
 	input reset;
 	input priv_scl, priv_sda, main_sda, main_scl, sysclk; //y_button;
-	wire clk;
+	reg clk;
 	output [7:0] dac_level, LED_out, debug_port;
 	output dac_clk;
+	output seedclock;
 	wire [3:0] state;
 
 
@@ -16,8 +18,10 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	assign priv_scl_out = priv_scl;
 	assign priv_sda_out = priv_sda;
 
-	//clock_divider #(8, 2) div(sysclk, clk);
-	assign clk = sysclk;
+	
+	always @(posedge sysclk) begin 
+		clk <= ~clk;
+	end
 
 	wire reset_dbncd;
 	debouncer dbnc_rst(reset, reset_dbncd, clk);
@@ -28,6 +32,8 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	//debug signals
 	wire [31:0] delay_count;
 
+	clock_divider #(8,21) div_out(sysclk, seedclock); //25 is stable???
+
 	/*
 	assign priv_nack = priv_sda_dec[0];
 	assign main_nack = main_sda_dec[0];
@@ -37,14 +43,16 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 
 	assign debug_port[0] = priv_sda;
 	assign debug_port[1] = priv_scl;
-	assign debug_port[5:2] = state;
-	assign debug_port[7:6] = 0;
+	assign debug_port[4:2] = state[2:0];
+	//assign debug_port[5:2] = state;
+	//assign debug_port[6] = clk;
+	//assign debug_port[7] = seedclock;
 	//assign debug_port[7:2] = delay_count[5:0];
 	//assign debug_port[7]   = delay_count[0];
-	/*assign debug_port[5] = priv_scl_posedge;
+	assign debug_port[5] = priv_scl_posedge;
 	assign debug_port[6] = priv_sda_posedge;
 	assign debug_port[7] = priv_sda_negedge;
-*/
+
 	//i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 	//			 reset, clk
 	pmic_core core(main_sda_dec, priv_sda_dec, priv_ready, main_ready, dac_level, reset_dbncd, clk, state, delay_count);

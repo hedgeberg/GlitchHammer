@@ -35,8 +35,7 @@ NET "sysclk" LOC = AE14;
 NET "priv_scl" LOC = AF24;
 NET "priv_sda" LOC = AE24;
 
-
-
+NET "seedclock" LOC = D8;
 
 NET "dac_clk" LOC = AF8;
 NET "reset" LOC = B6;
