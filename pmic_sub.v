@@ -8,9 +8,7 @@
 //replaces the PMIC, ideally to be used for glitch attacks on the 3DS SoC
 
 //todo:
-//	  : route private bus edge detection logic for debugging. 
-//	  : reimplement i2c_detection with edge detection logic. 
-//    : continue onboard testing after simulation confirms function.
+//	  : add loop and end operations
 //    : 
 
 module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
@@ -75,7 +73,7 @@ module pmic_core(i2c_main, i2c_priv, priv_ready, main_ready, dac_out,
 				parcel_start_instr <= 0;
 				curr_instr <= 0; 
 				delay_len <= 0; 
-				dac_out <= 8'hFF;
+				dac_out <= 8'h00;
 				state <= new_parcel;
 			end 
 			pointer_decrement: begin

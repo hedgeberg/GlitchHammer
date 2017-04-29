@@ -21,16 +21,78 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 
 	always @* begin
 		case(instr_pt)
+
 			0:  instr = 12'b00_1_10000100_0;
 			1:  instr = 12'b00_1_00000001_0;
 			2:  instr = 12'b00_1_00001111_0;
 			3:  instr = 12'b10_1_00000000_0;
-			4:  instr = 12'b01_1_11101101_0;
+			4:  instr = 12'b01_1_10001110_0;   //10100101
+			5:  instr = {DELAY,   PRIV_BUS, 8'b00000101, ACK};
+			6:  instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			7:  instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			8:  instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			9:  instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
+			10: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			11: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			12: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			13: instr = {DELAY,   PRIV_BUS, 8'b00000100, ACK};
+			14: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			15: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			16: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			//13: instr = {DELAY,   PRIV_BUS, 8'b00000010, ACK};
+			//14: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			
+			//pulsing post-reboot
+			/*
 			5:  instr = 12'b00_1_10000100_0;
 			6:  instr = 12'b00_1_00000111_0;
 			7:  instr = 12'b00_1_01011111_0;
-			8:  instr = {DELAY,  PRIV_BUS, 8'b00000001, ACK};
-			9:  instr = {DAC_UP, PRIV_BUS, 8'b11101101, ACK};
+			8:  instr = {DELAY,   PRIV_BUS, 8'b00000001, ACK};
+			9:  instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			10: instr = {I2C_CHK, PRIV_BUS, 8'b10000100, ACK};
+			11: instr = {I2C_CHK, PRIV_BUS, 8'b00000011, ACK};
+			12: instr = {I2C_CHK, PRIV_BUS, 8'b00000011, ACK};
+			13: instr = {DELAY,   PRIV_BUS, 8'b00000010, ACK};
+			14: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			15: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			16: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			17: instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
+			18: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			19: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			20: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			21: instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
+			22: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			23: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			24: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			25: instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
+			26: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			27: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			28: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			29: instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
+			30: instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
+			31: instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
+			32: instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
+			*/
+
+			/*
+			0:  instr = {DAC_UP, PRIV_BUS, 8'b10100101, ACK};
+			1:  instr = {DELAY,  PRIV_BUS, 8'b00000011, ACK};
+			1:  instr = {DAC_UP, PRIV_BUS, 8'b00000000, ACK};
+			2:  instr = {DELAY,  PRIV_BUS, 8'b00000001, ACK};
+			3:  instr = {DAC_UP, PRIV_BUS, 8'b10100101, ACK};
+			4:  instr = {DELAY,  PRIV_BUS, 8'b00000011, ACK};
+			5:  instr = {DAC_UP, PRIV_BUS, 8'b00000000, ACK};
+			6:  instr = {DELAY,  PRIV_BUS, 8'b00000001, ACK};
+			7:  instr = {DAC_UP, PRIV_BUS, 8'b10100101, ACK};
+			8:  instr = {DELAY,  PRIV_BUS, 8'b00000011, ACK};
+			9:  instr = {DAC_UP, PRIV_BUS, 8'b00000000, ACK};
+			10: instr = {DELAY,  PRIV_BUS, 8'b00000001, ACK};
+			11: instr = {DAC_UP, PRIV_BUS, 8'b10100101, ACK};
+			*/
+
+
+			//1.17V = 11100001
+
 
 			//8:  instr = 12'b10_1_00000001_0;
 			//9:  instr = 12'b01_1_11111111_0;
@@ -56,11 +118,15 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 		endcase
 
 		case(delay_num)
-			0: delay_len = 32'h00001F40;
+			0: delay_len = 32'h00000FA0;
+			//0x1f40
+			//1: delay_len = 32'h00000005;
 			1: delay_len = 32'h000F4240;
 			//1: delay_len = 32'h00093378;
-			2: delay_len = 32'h0001A5E0;
-			3: delay_len = 32'h0402EAA0;
+			2: delay_len = 32'h05F5E100;//32'h0006EF64; //6a720 //b3b0
+			3: delay_len = 32'h0000001B; //F
+			4: delay_len = 32'h000009C4;
+			5: delay_len = 32'h3B9ACA00;
 			default: delay_len = 0;
 		endcase
 	end

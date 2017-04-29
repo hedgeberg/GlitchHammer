@@ -56,7 +56,7 @@ NET "dac_level[2]" LOC = M20;
 NET "dac_level[1]" LOC = M23;
 NET "dac_level[0]" LOC = M22;
 
-
+NET "pulldown_trans" LOC = AA23;
 NET "main_scl" LOC = AD22;
 NET "main_sda" LOC = AB21;
 NET "debug_port[0]" LOC = AB22;

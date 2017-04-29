@@ -3,15 +3,20 @@
 `include "common/debouncer.v"
 module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button,
 					  dac_level, dac_clk, LED_out, reset, debug_port, 
-					  seedclock);
+					  seedclock, pulldown_trans);
 	input reset;
 	input priv_scl, priv_sda, main_sda, main_scl, sysclk; //y_button;
 	reg clk;
 	output [7:0] dac_level, LED_out, debug_port;
 	output dac_clk;
 	output seedclock;
+	output reg pulldown_trans;
 	wire [3:0] state;
 
+	always @* begin
+		if(dac_level == 8'b0) pulldown_trans = 1;
+		else pulldown_trans = 0; 
+	end
 
 	assign LED_out = dac_level;
 	assign dac_clk = clk;
