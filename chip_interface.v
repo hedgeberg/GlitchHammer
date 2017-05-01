@@ -37,7 +37,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	//debug signals
 	wire [31:0] delay_count;
 
-	clock_divider #(8,21) div_out(sysclk, seedclock); //25 is stable???
+	clock_divider #(8,21) div_out(sysclk, seedclock); //21 is stable
 
 	/*
 	assign priv_nack = priv_sda_dec[0];
