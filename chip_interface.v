@@ -14,7 +14,7 @@ module chip_interface(priv_scl, priv_sda, main_scl, main_sda, sysclk, //y_button
 	wire [3:0] state;
 
 	always @* begin
-		if(dac_level == 8'b0) pulldown_trans = 1;
+		if(dac_level == 8'b00000000) pulldown_trans = 1;
 		else pulldown_trans = 0; 
 	end
 

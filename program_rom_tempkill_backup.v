@@ -31,7 +31,7 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 			//no reboot 6-pulse, 20 second delay
 			
 			5:  instr = {DELAY,   PRIV_BUS, 8'b00000101, ACK};
-			6:  instr = {DAC_UP,  PRIV_BUS, 8'b01111011, ACK};
+			6:  instr = {DAC_UP,  PRIV_BUS, 8'b00000000, ACK};
 			7:  instr = {DELAY,   PRIV_BUS, 8'b00000011, ACK};
 			8:  instr = {DAC_UP,  PRIV_BUS, 8'b10001110, ACK};
 			//9:  instr = {DELAY,	  PRIV_BUS, 8'b00000100, ACK};
@@ -149,7 +149,7 @@ module program_rom(instr_pt, instr, delay_num, delay_len);
 			1: delay_len = 32'h000F4240;  
 			//1: delay_len = 32'h00093378;
 			2: delay_len = 32'h000665AC; //6a720 //b3b0
-			3: delay_len = 32'h00000800; //F
+			3: delay_len = 32'h00000040; //F
 			4: delay_len = 32'h00000060;
 			5: delay_len = 32'h3B9AC9D4;
 			default: delay_len = 0;
