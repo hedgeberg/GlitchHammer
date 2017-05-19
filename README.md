@@ -16,46 +16,30 @@ This system was initially developed out of necessity for performing Vectorhax, a
 
 **FEATURES**
 
-Current Features:
+##Current Features:
 
 -A small ISA, consisting of:
-
     -checks against a list of stimuli (geared for i2c commands)
-    
     -cycle-accurate timing delays
-    
     -digital-to-analog converter interfacing commands
-    
 -The HDL needed to perform these tasks on an FPGA 
-
 -A simple 8-pin debugging interface
-
 -Common circuit elements, contained in folder "common" which may be appropriate for use in other projects, and may at a later date be spun into their own project.
 
 
-Features in the works:
-
+##Features in the works:
 -UART interface to enable programming from a master node
-
 -Assembly language and assembler to enable master node automation
-
 -Rework of ISA to add jumps, compares, some RISC-style enable/disable logic, and generally cleaner command syntax
-
 -Higher quality analog interface to enable higher general performance.
 
 
-Planned features:
-
+##Planned features:
 -Redesign in systemverilog
-
 -UART debugging 
-
 -Zynq/other all-programmable SoC-specific systems for implementing in FPGA cells, for faster comms between master CPU and GlitchHammer
-
 -Multiple ADC channels
-
 -sample code and projects + documentation
-
 -Documentation of ISA and sample analog frontends to enable home use.
 
 
@@ -72,19 +56,14 @@ Best of luck!
 
 **CREDITS AND THANKS**
 
-Kitlith -- For his really just incredible help and enthusiasm. He took on the challenge of making a proper assembly language and assembler and it really is a labor of love. Without him that wouldn't be possible.
-
-Stuckpixel -- For the assistance in troubleshooting and brainstorming.
-
-Normmatt -- For debugging and constantly catching bugs even in a language he didn't even understand.
-
-SciresM -- For being an all around genius, and also freeing me of the time constraint to finish 3DS exploitation, so this project can blossom into something really great. 
-
-My partner, Muu -- For supporting me and not minding the long nights disappearing into this pet project. I'm really sorry for being so busy all the time, and i love you deeply
-
-All the folks in my team who I haven't named here because its a lot. You know who you are <3
-
-All the people who came to watch my streams while I worked on developing this. I hope you all learned something cool
+##I'd like to thank the following for their contributions on this project thus far and im sure in the future:
+-Kitlith -- For his really just incredible help and enthusiasm. He took on the challenge of making a proper assembly language and assembler and it really is a labor of love. Without him that wouldn't be possible.
+-Stuckpixel -- For the assistance in troubleshooting and brainstorming.
+-Normmatt -- For debugging and constantly catching bugs even in a language he didn't even understand.
+-SciresM -- For being an all around genius, and also freeing me of the time constraint to finish 3DS exploitation, so this project can blossom into something really great. 
+-My partner, Muu -- For supporting me and not minding the long nights disappearing into this pet project. I'm really sorry for being so busy all the time, and i love you deeply
+-All the folks in my team who I haven't named here because its a lot. You know who you are <3
+-All the people who came to watch my streams while I worked on developing this. I hope you all learned something cool
 
 
 **LICENSE**
