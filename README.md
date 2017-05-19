@@ -16,7 +16,7 @@ This system was initially developed out of necessity for performing Vectorhax, a
 
 **FEATURES**
 
-##Current Features:
+Current Features:
  - A small ISA, consisting of:
     - checks against a list of stimuli (geared for i2c commands)
     - cycle-accurate timing delays
@@ -26,14 +26,14 @@ This system was initially developed out of necessity for performing Vectorhax, a
  - Common circuit elements, contained in folder "common" which may be appropriate for use in other projects, and may at a later date be spun into their own project.
 
 
-##Features in the works:
+Features in the works:
  - UART interface to enable programming from a master node
  - Assembly language and assembler to enable master node automation
  - Rework of ISA to add jumps, compares, some RISC-style enable/disable logic, and generally cleaner command syntax
  - Higher quality analog interface to enable higher general performance.
 
 
-##Planned features:
+Planned features:
  - Redesign in systemverilog
  - UART debugging 
  - Zynq/other all-programmable SoC-specific systems for implementing in FPGA cells, for faster comms between master CPU and GlitchHammer
